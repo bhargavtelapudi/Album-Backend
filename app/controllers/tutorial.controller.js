@@ -1,5 +1,6 @@
 const db = require("../models");
-const Tutorial = db.tutorials;
+const Album = db.albums;
+const Artist = db.artists
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
@@ -30,9 +31,15 @@ exports.create = (req, res) => {
 };
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-  const title = req.query.title;
-  var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-  Tutorial.findAll({ where: condition })
+  //const title = req.query.title;
+  //var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  console.log("in")
+  
+  Album.findAll({
+    include: [
+{ model: db.artists, as: 'artist' }
+  ]      
+  })
     .then(data => {
       res.send(data);
     })
@@ -65,6 +72,23 @@ exports.findOne = (req, res) => {
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
+  //update artist name
+ Artist.update({name:req.body.artist},{
+   where:{albumId:id}
+ })
+ .then(num => {
+  if (num == 1) {
+    console.log("artist name updated successfully")
+  } else {
+    console.log("Error updating Artist name ")
+  }
+})
+.catch(err => {
+  res.status(500).send({
+    message: "Error updating Tutorial with id=" + id
+  });
+});
+
   Tutorial.update(req.body, {
     where: { id: id }
   })
