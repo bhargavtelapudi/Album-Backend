@@ -1,7 +1,7 @@
 {
-  "name": "tutorial-backend",
+  "name": "album-backend",
   "version": "1.0.0",
-  "description": "Tutorial Node.js with Rest API",
+  "description": "Talbum Node.js with Rest API",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
     "express",
     "sequalize"
   ],
-  "author": "bezkoder",
+  "author": "Bhargav",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
