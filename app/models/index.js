@@ -32,4 +32,5 @@ db.artists.belongsTo(db.albums,{
 })
 
 
+
 module.exports = db;
