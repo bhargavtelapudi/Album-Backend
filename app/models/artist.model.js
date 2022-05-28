@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
-    const Artist = sequelize.define("artist", {
-      name: {
-        type: Sequelize.STRING
-      },
-      
-    });
-    return Artist;
-  };
+  const Artist = sequelize.define("artist", {
+    artist: {
+      type: Sequelize.STRING
+    },
+    
+  });
+  return Artist;
+};
