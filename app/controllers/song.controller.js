@@ -1,7 +1,7 @@
 const db = require("../models");
-const Lesson = db.lessons;
+const Lesson = db.songs;
 const Op = db.Sequelize.Op;
-// Create and Save a new Lesson
+// Create and Save a new song
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.title) {
@@ -11,138 +11,138 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Lesson
-  const lesson = {
-    tutorialId: req.params.tutorialId,
+  // Create a song
+  const song = {
+    songId: req.params.songId,
     title: req.body.title,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
   };
-  // Save Lesson in the database
-  Lesson.create(lesson)
+  // Save song in the database
+  Song.create(song)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Lesson."
+          err.message || "Some error occurred while creating the Song."
       });
     });
 };
-// Retrieve all Lessons from the database.
+// Retrieve all Songss from the database.
 exports.findAll = (req, res) => {
-  const lessonId = req.query.lessonId;
-  var condition = lessonId ? {
-    lessonId: {
-      [Op.like]: `%${lessonId}%`
+  const songId = req.query.songId;
+  var condition = songId ? {
+    songId: {
+      [Op.like]: `%${songId}%`
     }
   } : null;
 
-  Lesson.findAll({ where: condition })
+  Song.findAll({ where: condition })
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving lessons."
+          err.message || "Some error occurred while retrieving songs."
       });
     });
 };
-// Find a single Lesson with an id
+// Find a single song with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Lesson.findByPk(id)
+  Song.findByPk(id)
     .then(data => {
       if (data) {
         res.send(data);
       } else {
         res.status(404).send({
-          message: `Cannot find Lesson with id=${id}.`
+          message: `Cannot find Song with id=${id}.`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Lesson with id=" + id
+        message: "Error retrieving Song with id=" + id
       });
     });
 };
-// Update a Lesson by the id in the request
+// Update a Song by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  Lesson.update(req.body, {
+  Song.update(req.body, {
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Lesson was updated successfully."
+          message: "Song was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update Lesson with id=${id}. Maybe Lesson was not found or req.body is empty!`
+          message: `Cannot update Song with id=${id}. Maybe Song was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Lesson with id=" + id
+        message: "Error updating Song with id=" + id
       });
     });
 };
-// Delete a Lesson with the specified id in the request
+// Delete a Song with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Lesson.destroy({
+  Song.destroy({
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Lesson was deleted successfully!"
+          message: "Song was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Lesson with id=${id}. Maybe Lesson was not found!`
+          message: `Cannot delete Song with id=${id}. Maybe Song was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Lesson with id=" + id
+        message: "Could not delete Song with id=" + id
       });
     });
 };
-// Delete all Lessons from the database.
+// Delete all songs from the database.
 exports.deleteAll = (req, res) => {
-  Lesson.destroy({
+  Song.destroy({
     where: {},
     truncate: false
   })
     .then(nums => {
-      res.send({ message: `${nums} Lessons were deleted successfully!` });
+      res.send({ message: `${nums} Songs were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all lessons."
+          err.message || "Some error occurred while removing all songs."
       });
     });
 };
-// Find all published Lessons
+// Find all published Songs
 exports.findAllPublished = (req, res) => {
-  const lessonId = req.query.lessonId;
+  const songId = req.query.songId;
 
-  Lesson.findAll({ where: { published: true } })
+  Song.findAll({ where: { published: true } })
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving lessons."
+          err.message || "Some error occurred while retrieving songs."
       });
     });
 };

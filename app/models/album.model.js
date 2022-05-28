@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Lesson = sequelize.define("lesson", {
+  const Album = sequelize.define("album", {
     title: {
       type: Sequelize.STRING
     },
@@ -10,5 +10,5 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN
     }
   });
-  return Lesson;
+  return Album;
 };
