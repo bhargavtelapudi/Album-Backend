@@ -11,6 +11,7 @@ exports.create = (req, res) => {
     });
     return;
   }
+  
   // Create a Tutorial
   const tutorial = {
     title: req.body.title,
