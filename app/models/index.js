@@ -14,14 +14,22 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
-db.lessons = require("./lesson.model.js")(sequelize, Sequelize);
+db.albums = require("./tutorial.model.js")(sequelize, Sequelize);
+db.songs = require("./lesson.model.js")(sequelize, Sequelize);
+db.artists = require("./artist.model.js")(sequelize,Sequelize)
 
-db.tutorials.hasMany(db.lessons, {
-  as: 'lesson'
+db.albums.hasMany(db.songs, {
+  as: 'song'
 });
-db.lessons.belongsTo(db.tutorials, {
-  foreignKey: 'tutorialId', as: 'tutorial',
+db.songs.belongsTo(db.albums, {
+  foreignKey: 'albumId', as: 'album',
 });
+db.albums.hasMany(db.artists, {
+  as: 'artist'
+});
+db.artists.belongsTo(db.albums,{
+  foreignKey:'albumId',as:'album'
+})
+
 
 module.exports = db;
