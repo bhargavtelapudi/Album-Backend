@@ -2,8 +2,10 @@ const db = require("../models");
 const Album = db.albums;
 const Artist = db.artists
 const Op = db.Sequelize.Op;
-// Create and Save a new Tutorial
-exports.create = (req, res) => {
+
+
+// Create and Save a new Albuml
+exports.create = async(req, res) => {
   // Validate request
   if (!req.body.title) {
     res.status(400).send({
@@ -11,24 +13,53 @@ exports.create = (req, res) => {
     });
     return;
   }
-  
-  // Create a Tutorial
-  const tutorial = {
+  //artist name mandatory
+  if (!req.body.artist) {
+    res.status(400).send({
+      message: "artist name cannot not be empty!"
+    });
+    return;
+  }
+  // Create a album
+  const album = {
     title: req.body.title,
     description: req.body.description,
-    published: req.body.published ? req.body.published : false
+    published: req.body.published ? req.body.published : false,
   };
-  // Save Tutorial in the database
-  Tutorial.create(tutorial)
+
+  
+
+  let response;
+  // Save Album in the database
+  await Album.create(album)
     .then(data => {
-      res.send(data);
+      response = data.dataValues
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Tutorial."
+          err.message || "Some error occurred while creating the Album."
       });
     });
+
+    //create Artist
+  const artist = {
+    artist : req.body.artist,
+     albumId:response.id
+  }
+      // Save Atist in the database
+     await Artist.create(artist)
+    .then(data => {
+      response.artist = data.artist
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the Album."
+      });
+    });
+    
+res.send(response)
 };
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
