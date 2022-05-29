@@ -1,7 +1,7 @@
 const db = require("../models");
-const Lesson = db.lessons;
+const Song = db.songs;
 const Op = db.Sequelize.Op;
-// Create and Save a new Lesson
+// Create and Save a new Song
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.title) {
@@ -11,23 +11,22 @@ exports.create = (req, res) => {
     return;
   }
 
-  
-  // Create a Lesson
-  const lesson = {
-    tutorialId: req.params.tutorialId,
+  // Create a Song
+  const song = {
+    albumId: req.params.albumId,
     title: req.body.title,
     description: req.body.description,
     published: req.body.published ? req.body.published : false
   };
-  // Save Lesson in the database
-  Lesson.create(lesson)
+  // Save Song in the database
+  Song.create(song)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Lesson."
+          err.message || "Some error occurred while creating the song."
       });
     });
 };
@@ -73,23 +72,23 @@ exports.findOne = (req, res) => {
 // Update a Lesson by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  Lesson.update(req.body, {
+  Song.update(req.body, {
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Lesson was updated successfully."
+          message: "Song was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update Lesson with id=${id}. Maybe Lesson was not found or req.body is empty!`
+          message: `Cannot update Song with id=${id}. Maybe Song was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Lesson with id=" + id
+        message: "Error updating Song with id=" + id
       });
     });
 };
