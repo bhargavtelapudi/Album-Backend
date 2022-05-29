@@ -130,19 +130,29 @@ exports.delete = (req, res) => {
       });
     });
 };
-// Delete all Tutorials from the database.
+// Delete all Albums from the database.
 exports.deleteAll = (req, res) => {
-  Tutorial.destroy({
+  Album.destroy({
     where: {},
     truncate: false
   })
-    .then(nums => {
-      res.send({ message: `${nums} Tutorials were deleted successfully!` });
+    .then(async nums => {
+      //delete all songs
+     await Song.destroy({
+        where:{},
+        truncate:false
+      })
+      //delete all artists
+      await Artist.destroy({
+        where:{},
+        truncate:false
+      })
+      res.send({ message: `${nums} Albums were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all tutorials."
+          err.message || "Some error occurred while removing all Albums."
       });
     });
 };
