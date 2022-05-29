@@ -81,24 +81,37 @@ exports.findAll = (req, res) => {
     });
 };
 // Find a single Tutorial with an id
-exports.findOne = (req, res) => {
+exports.findOne = async(req, res) => {
   const id = req.params.id;
-  Tutorial.findByPk(id)
-    .then(data => {
+  Album.findAll({
+    where:{id:id},
+    include:[
+    { model: db.songs, as: 'song' }]
+  })
+    .then(async data => {
       if (data) {
-        res.send(data);
+        let artist = await Artist.findOne({
+          where:{albumId:id}
+         })
+        return res.send({
+          data,
+          artist:artist.artist
+        })
+        
       } else {
         res.status(404).send({
-          message: `Cannot find Tutorial with id=${id}.`
+          message: `Cannot find Album with id=${id}.`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id
+        message: "Error retrieving Album with id=" + id
       });
     });
-};
+
+    };
+
 // Update a Album by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
