@@ -67,46 +67,54 @@ exports.findOne = (req, res) => {
       });
     });
 };
-// Update a Tutorial by the id in the request
+// Update a Album by the id in the request
 exports.update = (req, res) => {
-    const id = req.params.id;
-      //update artist name
-    Artist.update({name:req.body.artist},{
-      where:{albumId:id}
+  const id = req.params.id;
+  if (req.body.artist) {
+    Artist.update({ artist: req.body.artist }, {
+      where: { albumId: id }
     })
       .then(num => {
+        console.log("ss",num)
         if (num == 1) {
-          console.log("artist name updated successfully") 
+          console.log("artist name updated successfully")
+        
         } else {
           console.log("Error updating Artist name ")
+          return res.send({
+          message:  'Error updating Artist name'
+          })
         }
+        //update artist name
+
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error updating Tutorial with id=" + id
+          message: "Error updating Album with id=" + id
         });
-     });
 
-    Tutorial.update(req.body, {
+      });
+  }
+    Album.update(req.body, {
       where: { id: id }
     })
       .then(num => {
         if (num == 1) {
           res.send({
-            message: "Tutorial was updated successfully."
+            message: "Album details was updated successfully."
           });
         } else {
           res.send({
-            message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
+            message: `Cannot update Album with id=${id}. Maybe Album was not found or req.body is empty!`
           });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error updating Tutorial with id=" + id
+          message: "Error updating Album with id=" + id
         });
-      });
-};
+      });};
+
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
