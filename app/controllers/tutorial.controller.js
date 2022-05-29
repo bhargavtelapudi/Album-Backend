@@ -1,6 +1,7 @@
 const db = require("../models");
 const Album = db.albums;
 const Artist = db.artists
+const Song = db.songs
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
@@ -121,20 +122,28 @@ exports.update = (req, res) => {
  
 };
 
-// Delete a Tutorial with the specified id in the request
+// Delete a Album with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Tutorial.destroy({
+  Album.destroy({
     where: { id: id }
   })
-    .then(num => {
+    .then(async num => {
       if (num == 1) {
-        res.send({
-          message: "Tutorial was deleted successfully!"
+        //delete artist 
+      await  Artist.destroy({
+          where:{albumId:id}
+        })
+        //destroy songs with this albumId
+      await  Song.destroy({
+          where:{albumId:id}
+        })
+      await  res.send({
+          message: "Album was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
+          message: `Cannot delete Album with id=${id}. Maybe Album was not found!`
         });
       }
     })
