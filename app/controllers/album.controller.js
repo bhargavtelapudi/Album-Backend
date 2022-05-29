@@ -1,9 +1,12 @@
 const db = require("../models");
 const Album = db.albums;
 const Artist = db.artists
+const Song = db.songs
 const Op = db.Sequelize.Op;
-// Create and Save a new Tutorial
-exports.create = (req, res) => {
+
+
+// Create and Save a new Albuml
+exports.create = async(req, res) => {
   // Validate request
   if (!req.body.title) {
     res.status(400).send({
@@ -11,24 +14,53 @@ exports.create = (req, res) => {
     });
     return;
   }
-  
-  // Create a Tutorial
-  const tutorial = {
+  //artist name mandatory
+  if (!req.body.artist) {
+    res.status(400).send({
+      message: "artist name cannot not be empty!"
+    });
+    return;
+  }
+  // Create a album
+  const album = {
     title: req.body.title,
     description: req.body.description,
-    published: req.body.published ? req.body.published : false
+    published: req.body.published ? req.body.published : false,
   };
-  // Save Tutorial in the database
-  Tutorial.create(tutorial)
+
+  
+
+  let response;
+  // Save Album in the database
+  await Album.create(album)
     .then(data => {
-      res.send(data);
+      response = data.dataValues
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Tutorial."
+          err.message || "Some error occurred while creating the Album."
       });
     });
+
+    //create Artist
+  const artist = {
+    artist : req.body.artist,
+     albumId:response.id
+  }
+      // Save Atist in the database
+     await Artist.create(artist)
+    .then(data => {
+      response.artist = data.artist
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the Album."
+      });
+    });
+    
+res.send(response)
 };
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
@@ -49,24 +81,37 @@ exports.findAll = (req, res) => {
     });
 };
 // Find a single Tutorial with an id
-exports.findOne = (req, res) => {
+exports.findOne = async(req, res) => {
   const id = req.params.id;
-  Tutorial.findByPk(id)
-    .then(data => {
+  Album.findAll({
+    where:{id:id},
+    include:[
+    { model: db.songs, as: 'song' }]
+  })
+    .then(async data => {
       if (data) {
-        res.send(data);
+        let artist = await Artist.findOne({
+          where:{albumId:id}
+         })
+        return res.send({
+          data,
+          artist:artist.artist
+        })
+        
       } else {
         res.status(404).send({
-          message: `Cannot find Tutorial with id=${id}.`
+          message: `Cannot find Album with id=${id}.`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id
+        message: "Error retrieving Album with id=" + id
       });
     });
-};
+
+    };
+
 // Update a Album by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
@@ -121,20 +166,28 @@ exports.update = (req, res) => {
  
 };
 
-// Delete a Tutorial with the specified id in the request
+// Delete a Album with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Tutorial.destroy({
+  Album.destroy({
     where: { id: id }
   })
-    .then(num => {
+    .then(async num => {
       if (num == 1) {
-        res.send({
-          message: "Tutorial was deleted successfully!"
+        //delete artist 
+      await  Artist.destroy({
+          where:{albumId:id}
+        })
+        //destroy songs with this albumId
+      await  Song.destroy({
+          where:{albumId:id}
+        })
+      await  res.send({
+          message: "Album was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
+          message: `Cannot delete Album with id=${id}. Maybe Album was not found!`
         });
       }
     })
@@ -144,19 +197,29 @@ exports.delete = (req, res) => {
       });
     });
 };
-// Delete all Tutorials from the database.
+// Delete all Albums from the database.
 exports.deleteAll = (req, res) => {
-  Tutorial.destroy({
+  Album.destroy({
     where: {},
     truncate: false
   })
-    .then(nums => {
-      res.send({ message: `${nums} Tutorials were deleted successfully!` });
+    .then(async nums => {
+      //delete all songs
+     await Song.destroy({
+        where:{},
+        truncate:false
+      })
+      //delete all artists
+      await Artist.destroy({
+        where:{},
+        truncate:false
+      })
+      res.send({ message: `${nums} Albums were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all tutorials."
+          err.message || "Some error occurred while removing all Albums."
       });
     });
 };

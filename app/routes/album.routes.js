@@ -1,5 +1,5 @@
 module.exports = app => {
-  const albums = require("../controllers/tutorial.controller.js");
+  const albums = require("../controllers/album.controller.js");
   var router = require("express").Router();
   // Create a new Tutorial
   router.post("/", albums.create);
