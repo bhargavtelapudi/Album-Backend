@@ -78,9 +78,6 @@ exports.update = (req, res) => {
         console.log("ss",num)
         if (num == 1) {
           console.log("artist name updated successfully")
-        return  res.send({
-          message: "artist name updated successfully"
-        })
         
         } else {
           console.log("Error updating Artist name ")
@@ -97,14 +94,14 @@ exports.update = (req, res) => {
         });
 
       });
-  }else{
+  }
     Album.update(req.body, {
       where: { id: id }
     })
       .then(num => {
         if (num == 1) {
           res.send({
-            message: "Album was updated successfully."
+            message: "Album details was updated successfully."
           });
         } else {
           res.send({
@@ -116,10 +113,7 @@ exports.update = (req, res) => {
         res.status(500).send({
           message: "Error updating Album with id=" + id
         });
-      });
-  }
- 
-};
+      });};
 
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
