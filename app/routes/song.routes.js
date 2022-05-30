@@ -14,6 +14,6 @@ module.exports = app => {
   // Delete a Lesson with id
   router.delete("/:albumId/songs/:id", songs.delete);
   // Delete all songs
-  router.delete("/:albumId/songs/:id", songs.deleteAll);
+  router.delete("/:albumId/all/songs", songs.deleteAll);
   app.use('/api/albums', router);
 };

@@ -117,17 +117,18 @@ exports.delete = (req, res) => {
 };
 // Delete all Lessons from the database.
 exports.deleteAll = (req, res) => {
-  Lesson.destroy({
-    where: {},
+  console.log("req",req.params.albumId)
+  Song.destroy({
+    where: {albumId:req.params.albumId},
     truncate: false
   })
     .then(nums => {
-      res.send({ message: `${nums} Lessons were deleted successfully!` });
+      res.send({ message: `All Songs were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all lessons."
+          err.message || "Some error occurred while removing all songs."
       });
     });
 };
