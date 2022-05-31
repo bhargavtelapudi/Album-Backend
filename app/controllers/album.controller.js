@@ -113,37 +113,32 @@ exports.findOne = async(req, res) => {
     };
 
 // Update a Album by the id in the request
-exports.update = (req, res) => {
+exports.update =async (req, res) => {
+  var artistUpdate = false
   const id = req.params.id;
   if (req.body.artist) {
-    Artist.update({ artist: req.body.artist }, {
+   await Artist.update({ artist: req.body.artist }, {
       where: { albumId: id }
     })
       .then(num => {
-        console.log("ss",num)
-        if (num == 1) {
+        if (num == 1 ) {
+          artistUpdate = true
           console.log("artist name updated successfully")
-        return  res.send({
-          message: "artist name updated successfully"
-        })
-        
         } else {
-          console.log("Error updating Artist name ")
           return res.send({
           message:  'Error updating Artist name'
           })
         }
-        //update artist name
-
+      
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error updating Album with id=" + id
+          message: "Error updating artist with albumId=" + id
         });
-
       });
-  }else{
-    Album.update(req.body, {
+  }
+  if(req.body.title || req.body.description || req.body.published){
+   await Album.update(req.body, {
       where: { id: id }
     })
       .then(num => {
@@ -162,9 +157,16 @@ exports.update = (req, res) => {
           message: "Error updating Album with id=" + id
         });
       });
+    }else{
+    if(artistUpdate){
+      res.send({
+        message:'artist name updated successfully'}
+        )
+    }else{
+      res.send("some error occured")
+    }
   }
- 
-};
+  }
 
 // Delete a Album with the specified id in the request
 exports.delete = (req, res) => {
