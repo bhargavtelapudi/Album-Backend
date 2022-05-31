@@ -67,35 +67,32 @@ exports.findOne = (req, res) => {
       });
     });
 };
+
 // Update a Album by the id in the request
-exports.update = (req, res) => {
+exports.update =async (req, res) => {
+  var artistUpdate = false
   const id = req.params.id;
   if (req.body.artist) {
-    Artist.update({ artist: req.body.artist }, {
+   await Artist.update({ artist: req.body.artist }, {
       where: { albumId: id }
     })
       .then(num => {
-        console.log("ss",num)
-        if (num == 1) {
-          console.log("artist name updated successfully")
-        
+        if (num == 1 ) {
+          artistUpdate= true
         } else {
-          console.log("Error updating Artist name ")
           return res.send({
-          message:  'Error updating Artist name'
+          message:  'Error Occured while updating Artist name'
           })
         }
-        //update artist name
-
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error updating Album with id=" + id
+          message: "Error updating artist with albumId=" + id
         });
-
       });
   }
-    Album.update(req.body, {
+  if(req.body.title || req.body.description || req.body.published){
+   await Album.update(req.body, {
       where: { id: id }
     })
       .then(num => {
@@ -113,7 +110,15 @@ exports.update = (req, res) => {
         res.status(500).send({
           message: "Error updating Album with id=" + id
         });
-      });};
+      });
+    }else{
+    if(artistUpdate){
+      res.send('artist name updated successfully')
+    }else{
+      res.send("some error occured")
+    }
+  }
+  }
 
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
