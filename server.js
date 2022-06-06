@@ -27,6 +27,7 @@ app.get("/", (req, res) => {
 });
 require("./app/routes/album.routes")(app);
 require("./app/routes/song.routes")(app);
+require("./app/routes/artist.route")(app)
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
