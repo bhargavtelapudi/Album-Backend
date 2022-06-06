@@ -46,3 +46,38 @@ exports.findAll = (req, res) => {
         });
       });
   };
+
+ // Find a single artist and his albums with an id
+exports.findOne = async(req, res) => {
+  const artist = req.params.artist;
+  let artist_details ={
+    artist:artist
+  };
+  Artist.findAll({
+    where:{artist:artist}
+  })
+    .then(async data => {
+      if (data) {
+        artist_details.albums =[]
+        for(let i=0;i<data.length;i++){
+          await Album.findOne({
+            where:{id:data[i].dataValues.albumId}
+          }).then((data)=>{
+            artist_details.albums.push(data.dataValues)
+          })
+
+       }
+       return res.send(artist_details)
+      } else {
+        res.status(404).send({
+          message: `Cannot find Album with id=.`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Album with id="
+      });
+    });
+
+    };
