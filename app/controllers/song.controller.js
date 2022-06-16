@@ -30,23 +30,26 @@ exports.create = (req, res) => {
       });
     });
 };
-// Retrieve all Lessons from the database.
-exports.findAll = (req, res) => {
-  const lessonId = req.query.lessonId;
-  var condition = lessonId ? {
-    lessonId: {
-      [Op.like]: `%${lessonId}%`
+
+//search songs.
+exports.searchSong = (req, res) => {
+  const title = req.query.title;
+  var condition = title ? {
+    title: {
+      [Op.like]: `%${title}%`
     }
   } : null;
 
-  Lesson.findAll({ where: condition })
+  Song.findAll(
+    { where: condition,albumId:req.params.albumId }
+    )
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving lessons."
+          err.message || "Some error occurred while searching songs."
       });
     });
 };
