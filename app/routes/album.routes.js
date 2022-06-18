@@ -5,7 +5,9 @@ module.exports = app => {
   router.post("/", albums.create);
   // Retrieve all albums
   router.get("/", albums.findAll);
-  // Retrieve all published albums
+  //search albums
+  router.get("/search", albums.searchAlbum);
+  //Retrieve all published albums
   router.get("/published", albums.findAllPublished);
   // Retrieve a single Tutorial with id
   router.get("/:id", albums.findOne);
@@ -15,5 +17,6 @@ module.exports = app => {
   router.delete("/:id", albums.delete);
   // Delete all albums
   router.delete("/", albums.deleteAll);
+
   app.use('/api/albums', router);
 };
