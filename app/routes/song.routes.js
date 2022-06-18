@@ -3,8 +3,8 @@ module.exports = app => {
   var router = require("express").Router();
   // Create a new Song for a Album
   router.post("/:albumId/songs/", songs.create);
-  // Retrieve all songs for a Album
-  router.get("/:albumId/songs/", songs.findAll);
+ // search all songs for a Album
+ router.get("/:albumId/songs", songs.searchSong);
   // Retrieve all published songs for a Album
   router.get("/:albumId/songs/published", songs.findAllPublished);
   // Retrieve a single Lesson with id
