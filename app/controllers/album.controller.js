@@ -62,13 +62,16 @@ exports.create = async(req, res) => {
     
 res.send(response)
 };
+
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
   //const title = req.query.title;
   //var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
   Album.findAll({
     include: [
-      { model: db.artists, as: 'artist' },]
+      { model: db.artists, as: 'artist' },
+     { model:db.songs,as:'song'}
+    ]
   })
     .then(data => {
       res.send(data);
@@ -80,6 +83,7 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
 // Find a single Tutorial with an id
 exports.findOne = async(req, res) => {
   const id = req.params.id;
