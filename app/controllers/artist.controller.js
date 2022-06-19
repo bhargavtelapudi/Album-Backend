@@ -81,3 +81,46 @@ exports.findOne = async(req, res) => {
     });
 
     };
+
+    //delete artist
+exports.delete = async(req, res) => {
+  try{
+  const artist = req.params.artist;
+ const allAlbums = await Artist.findAll({
+          where:{ artist:artist }
+  })
+  for(let i=0;i<allAlbums.length;i++){
+   await Album.destroy({
+      where:{id:allAlbums[i].dataValues.albumId}
+    })
+  }
+  await Artist.destroy({
+    where:{artist:artist}
+  })
+  res.send({
+    message:"deleted successfully"
+  })
+}catch(err){
+  res.send(err)
+}
+  // Artist.destroy({
+  //   where: { id: id }
+  // })
+  //   .then(num => {
+  //     if (num == 1) {
+
+  //       res.send({
+  //         message: "Artist was deleted successfully!"
+  //       });
+  //     } else {
+  //       res.send({
+  //         message: `Cannot delete Artist  with id=${id}. Maybe artist was not found!`
+  //       });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).send({
+  //       message: "Could not delete artis wongith id=" + id
+  //     });
+  //   });
+    };
