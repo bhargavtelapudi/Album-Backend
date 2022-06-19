@@ -238,3 +238,24 @@ exports.findAllPublished = (req, res) => {
       });
     });
 };
+
+//search albums
+exports.searchAlbum = (req, res) => {
+  const title = req.query.title;
+  var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  Album.findAll({
+    where: condition,
+    include: [
+      { model: db.artists, as: 'artist' },]
+  })
+    .then(async data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while searching all albums."
+      });
+    });
+
+};
