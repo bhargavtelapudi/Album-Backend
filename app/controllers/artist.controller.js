@@ -37,7 +37,16 @@ exports.findAll = (req, res) => {
    // var condition = artist ? { artist: { [Op.like]: `%${artist}%` } } : null;
     Artist.findAll()
       .then(data => {
-        res.send(data);
+        let sortedArtists = []
+        let allartists = []
+        for(let i=0;i<data.length;i++){
+          if(!allartists.includes(data[i].dataValues.artist)){
+            allartists.push(data[i].dataValues.artist)
+            sortedArtists.push(data[i].dataValues)
+          }
+        }
+
+        res.send(sortedArtists);
       })
       .catch(err => {
         res.status(500).send({
