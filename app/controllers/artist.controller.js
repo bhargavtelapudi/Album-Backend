@@ -63,7 +63,11 @@ exports.findOne = async(req, res) => {
           await Album.findOne({
             where:{id:data[i].dataValues.albumId}
           }).then((data)=>{
-            artist_details.albums.push(data.dataValues)
+            if (data == null) {
+              artist_details.albums = []
+            } else {
+              artist_details.albums.push(data.dataValues)
+            }
           })
 
        }
